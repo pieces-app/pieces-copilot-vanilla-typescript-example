@@ -1,0 +1,15 @@
+{
+  "scripts": {
+    "build": "node esbuild.config.js production",
+    "watch": "node esbuild.config.js"
+  },
+  "devDependencies": {
+    "typescript": "^5.3.3"
+  },
+  "dependencies": {
+    "@pieces.app/pieces-os-client": "^1.2.1",
+    "@types/node": "^20.10.6",
+    "esbuild": "^0.19.11",
+    "ws": "^8.16.0"
+  }
+}

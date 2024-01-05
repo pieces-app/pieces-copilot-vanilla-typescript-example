@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>(Vanilla) Pieces Copilot Example</title>
+</head>
+
+<!-- Abstract this to a css file soon -->
+<style>
+    .vertical {
+        display: flex;
+        flex-direction: column;
+    }
+</style>
+
+<body>
+<h1>Pieces Copilot</h1>
+
+<div class="vertical">
+    <p>Enter your chat and then hit your enter key or press the 'send chat' button.</p>
+</div>
+
+<div id="chat-output"></div>
+<input type="textarea" id="chat-input">
+
+<button id='send-chat-btn'>Send Chat</button>
+<script src="./dist/index.js"></script>
+
+</html>
