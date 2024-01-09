@@ -1,6 +1,6 @@
 # pieces-copilot-vanilla-typescript-example
 
-A simple (vanilla) repository of examples for using the PiecesApi in Typescript.
+A (vanilla) repository of examples for using the PiecesApi in Typescript with the [Pieces Copilot](https://docs.pieces.app/features/pieces-copilot).
 
 Download **Pieces OS** before getting started here. I also reccomend getting the **Desktop App** where you can add a few snippets, or interact with the copilot first, and this can help avoid issues with connecting your application.
 
