@@ -1,5 +1,6 @@
 import CopilotStreamController from "./CopilotStreamController";
 
+// sets the message of the chat output.
 function setMessage(message: string) {
     const outputDiv = document.getElementById('chat-output');
     if (!outputDiv) throw new Error('expected id chat-output');
@@ -19,6 +20,7 @@ async function sendMessage() {
     })
 }
 
+// gets our copilot stream instance, and holds our buttons.
 async function main() {
     CopilotStreamController.getInstance();
 
