@@ -2,7 +2,11 @@
 
 A simple (vanilla) repository of examples for using the PiecesApi in Typescript.
 
-Download [Pieces OS](https://docs.pieces.app/installation-getting-started/what-am-i-installing) before getting started here. I also reccomend getting the [Desktop App]() where you can add a few snippets, or interact with the copilot first, and this can help avoid issues with connecting your application.
+Download **Pieces OS** before getting started here. I also reccomend getting the **Desktop App** where you can add a few snippets, or interact with the copilot first, and this can help avoid issues with connecting your application.
+
+**IF YOU WANT BOTH PIECES OS AND PIECES DESKTOP: [GO HERE](https://docs.pieces.app/installation-getting-started/what-am-i-installing)**
+
+**IF YOU WANT JUST PIECES OS: [GO HERE](https://docs.pieces.app/installation-getting-started/pieces-os)**
 
 Here are some examples of the api usage in the provided example:
 
