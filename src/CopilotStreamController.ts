@@ -4,6 +4,8 @@ import * as Pieces from "@pieces.app/pieces-os-client";
  * Stream controller class for interacting with the QGPT websocket
  */
 export default class CopilotStreamController {
+  public static selectedModelId: string = '';
+
   private static instance: CopilotStreamController;
 
   private ws: WebSocket | null = null; // the qgpt websocket
@@ -45,11 +47,42 @@ export default class CopilotStreamController {
     const input: Pieces.QGPTStreamInput = {
       question: {
         query,
-        relevant: {iterable: []} //@TODO hook up /relevance here for context
+        relevant: {iterable: []},
+        model: CopilotStreamController.selectedModelId
       },
     };
 
-    this.handleMessages({ input, setMessage });
+    await this.handleMessages({input, setMessage});
+  }
+
+  public async checkModel() {
+    let lookupID: string;
+    let modelName: string;
+
+    // use the conversations snapshot to get the current model id used in the conversation.
+    new Pieces.ConversationsApi().conversationsSnapshot({}).then(_conversations => {
+
+      // get the current conversation ID here.
+      lookupID = _conversations.iterable[0].model!.id;
+
+      new Pieces.ModelsApi().modelsSnapshot().then(_models => {
+        // use the lookup ID here to find the model name.
+        const model = _models.iterable.find(element => element.id === lookupID);
+
+        // TODO: need some help getting the values out of here, not sure why this always is stumping me.
+        try {
+          modelName = model!.name;
+          console.log(modelName);
+
+          const getModelUsage: HTMLElement | null = document.getElementById("model-viewer");
+          if (!getModelUsage) throw new Error('expected id model-viewer');
+          getModelUsage.innerText = modelName;
+          return modelName;
+        } catch (e) {
+          return e;
+        }
+      })
+    })
   }
 
   /**
@@ -64,7 +97,6 @@ export default class CopilotStreamController {
       const json = JSON.parse(msg.data);
       const result = Pieces.QGPTStreamOutputFromJSON(json); // strongly type the incoming message
       const answer: Pieces.QGPTQuestionAnswer | undefined = result.question?.answers.iterable[0];
-
 
       // the message is complete, or we do nothing
       if (result.status === 'COMPLETED') {
@@ -91,6 +123,7 @@ export default class CopilotStreamController {
       }
       // render the new total message
       this.setMessage?.(totalMessage);
+
     };
 
     // in the case that websocket is closed or errored we do some cleanup here
