@@ -25,7 +25,8 @@
 
 <button id='send-chat-btn'>Send Chat</button>
 <script src="./dist/index.js"></script>
-<p id="model-viewer"></p>
+
+<!-- these are the new radio buttons here for controlling model selection -->
 <form>
     <input type="radio" name="models" id="llama2-7b-cpu-radio">
     <label for="llama2-7b-cpu-radio">llama2-7b-cpu</label>
@@ -38,7 +39,7 @@
 
     <input type="radio" name="models" id="llama2-7b-gpu-radio">
     <label for="llama2-7b-gpu-radio">llama2-7b-gpu</label>
-    <!--    <input name="models" id="gpt-35-16k-radio">-->
+
 </form>
 <div id="model-downloads-container"></div>
 

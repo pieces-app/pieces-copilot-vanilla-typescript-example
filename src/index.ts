@@ -31,11 +31,14 @@ async function main() {
     const modelDownloadsContainer = document.getElementById('model-downloads-container') as HTMLDivElement | null;
     if (!modelDownloadsContainer) throw new Error('expected id model-downloads-container')
 
+    // set all model values for setting each onclick function.
     const gpt35 = models.iterable.find((model) => model.foundation === ModelFoundationEnum.Gpt35 && !model.name.includes('16k'))!;
-    CopilotStreamController.selectedModelId = gpt35.id;
     const gpt4 = models.iterable.find((model) => model.foundation === ModelFoundationEnum.Gpt4)!;
     const llama27bcpu = models.iterable.find((model) => model.foundation === ModelFoundationEnum.Llama27B && model.cpu)!;
     const llama27bgpu = models.iterable.find((model) => model.foundation === ModelFoundationEnum.Llama27B && !model.cpu)!;
+
+    // set your model id here for gpt-3.5
+    CopilotStreamController.selectedModelId = gpt35.id;
 
     const gpt35Button: HTMLElement | null = document.getElementById('gpt-35-radio') as HTMLInputElement | null;
     if (!gpt35Button) throw new Error('expected id gpt35Button');

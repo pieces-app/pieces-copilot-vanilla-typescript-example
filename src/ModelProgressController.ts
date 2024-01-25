@@ -1,5 +1,5 @@
 import * as Pieces from "@pieces.app/pieces-os-client";
-import {ModelApi, ModelDownloadProgressStatusEnum} from "@pieces.app/pieces-os-client";
+import {Model, ModelApi, ModelDownloadProgressStatusEnum} from "@pieces.app/pieces-os-client";
 
 
 export default class ModelProgressController {
@@ -19,6 +19,7 @@ export default class ModelProgressController {
    */
   private constructor() {
     this.models = new Pieces.ModelsApi().modelsSnapshot();
+
     this.models.then((models) => {
       this.initSockets(
         models.iterable.filter(

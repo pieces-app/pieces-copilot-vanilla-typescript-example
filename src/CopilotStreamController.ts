@@ -42,8 +42,7 @@ export default class CopilotStreamController {
     if (!this.ws) {
       this.connect();
     }
-    
-    // @TODO add conversation id
+
     const input: Pieces.QGPTStreamInput = {
       question: {
         query,
@@ -53,36 +52,6 @@ export default class CopilotStreamController {
     };
 
     await this.handleMessages({input, setMessage});
-  }
-
-  public async checkModel() {
-    let lookupID: string;
-    let modelName: string;
-
-    // use the conversations snapshot to get the current model id used in the conversation.
-    new Pieces.ConversationsApi().conversationsSnapshot({}).then(_conversations => {
-
-      // get the current conversation ID here.
-      lookupID = _conversations.iterable[0].model!.id;
-
-      new Pieces.ModelsApi().modelsSnapshot().then(_models => {
-        // use the lookup ID here to find the model name.
-        const model = _models.iterable.find(element => element.id === lookupID);
-
-        // TODO: need some help getting the values out of here, not sure why this always is stumping me.
-        try {
-          modelName = model!.name;
-          console.log(modelName);
-
-          const getModelUsage: HTMLElement | null = document.getElementById("model-viewer");
-          if (!getModelUsage) throw new Error('expected id model-viewer');
-          getModelUsage.innerText = modelName;
-          return modelName;
-        } catch (e) {
-          return e;
-        }
-      })
-    })
   }
 
   /**
