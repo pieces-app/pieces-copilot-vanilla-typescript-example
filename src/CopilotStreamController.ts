@@ -4,6 +4,8 @@ import * as Pieces from "@pieces.app/pieces-os-client";
  * Stream controller class for interacting with the QGPT websocket
  */
 export default class CopilotStreamController {
+  public static selectedModelId: string = '';
+
   private static instance: CopilotStreamController;
 
   private ws: WebSocket | null = null; // the qgpt websocket
@@ -40,16 +42,16 @@ export default class CopilotStreamController {
     if (!this.ws) {
       this.connect();
     }
-    
-    // @TODO add conversation id
+
     const input: Pieces.QGPTStreamInput = {
       question: {
         query,
-        relevant: {iterable: []} //@TODO hook up /relevance here for context
+        relevant: {iterable: []},
+        model: CopilotStreamController.selectedModelId
       },
     };
 
-    this.handleMessages({ input, setMessage });
+    await this.handleMessages({input, setMessage});
   }
 
   /**
@@ -64,7 +66,6 @@ export default class CopilotStreamController {
       const json = JSON.parse(msg.data);
       const result = Pieces.QGPTStreamOutputFromJSON(json); // strongly type the incoming message
       const answer: Pieces.QGPTQuestionAnswer | undefined = result.question?.answers.iterable[0];
-
 
       // the message is complete, or we do nothing
       if (result.status === 'COMPLETED') {
@@ -91,6 +92,7 @@ export default class CopilotStreamController {
       }
       // render the new total message
       this.setMessage?.(totalMessage);
+
     };
 
     // in the case that websocket is closed or errored we do some cleanup here
