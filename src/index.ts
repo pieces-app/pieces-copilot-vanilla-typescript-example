@@ -216,7 +216,8 @@ async function main() {
             })
         })
     }
-    
+
+    // handling for when a user presses enter to send the message just the same a selecting the button.
     userInput.onkeydown = (event) => {
         if (event.key === 'Enter') sendMessage();
     }
@@ -224,4 +225,6 @@ async function main() {
 }
 
 window.onload = main;
+
+
 

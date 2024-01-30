@@ -2,7 +2,7 @@
 
 A (vanilla) repository of examples for using the PiecesApi in Typescript with the [Pieces Copilot](https://docs.pieces.app/features/pieces-copilot).
 
-Download **Pieces OS** before getting started here. I also reccomend getting the **Desktop App** where you can add a few snippets, or interact with the copilot first, and this can help avoid issues with connecting your application.
+Download **Pieces OS** before getting started here. I also recommend getting the **Desktop App** where you can add a few snippets, or interact with the copilot first, and this can help avoid issues with connecting your application.
 
 **IF YOU WANT BOTH PIECES OS AND PIECES DESKTOP: [GO HERE](https://docs.pieces.app/installation-getting-started/what-am-i-installing)**
 
@@ -12,7 +12,7 @@ Here are some examples of the api usage in the provided example:
 
 ## askQGPT
 
-This endpoint can be used to ask a question to the pieces copilot. You dont have to neccisarily create a new conversation entirely, and can just send your question directly if you are not having a continuious conversation. Here the userInput is set from what is typed in the textarea (per the example) using the CopilotStreamController:
+This endpoint can be used to ask a question to the Pieces Copilot. You don't have to necessarily create a new conversation entirely, and can just send your question directly if you are not having a continuous conversation. Here the userInput is set from what is typed in the textarea (per the example) using the CopilotStreamController:
 
 ```typescript
 CopilotStreamController.getInstance().askQGPT({
@@ -62,7 +62,7 @@ const input: PiecesQGPTStreamInput = {
 
 ## Handling Response from `/qgpt/stream`
 
-When you recieve a message back, and in this example where it comes back from the websocket here, you will have to parse and type the data ensuring you can get to your props throughout the project.
+When you receive a message back, and in this example where it comes back from the websocket here, you will have to parse and type the data ensuring you can get to your props throughout the project.
 
 ```typescript
 this.ws.onmessage = (msg) => {
@@ -79,7 +79,7 @@ this.ws.onmessage = (msg) => {
 
 ## The `connect()` method
 
-When using the WebSocket, we use the raw path here `ws://localhost:1000/qgpt/stream` as the socket on localhost:1000. Its important to ensure that the websocket is running before utilizing it.
+When using the WebSocket, we use the raw path here `ws://localhost:1000/qgpt/stream` as the socket on localhost:1000. It's important to ensure that the websocket is running before utilizing it.
 
 So in a simplified connect() it would include:
 
