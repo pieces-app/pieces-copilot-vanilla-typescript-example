@@ -10,6 +10,15 @@
     .vertical {
         display: flex;
         flex-direction: column;
+        max-width: 450px;
+    }
+
+    .remove-spacing {
+        margin: 0 5px;
+    }
+
+    #model-downloads-container {
+        margin: 5px 0;
     }
 </style>
 
@@ -18,30 +27,40 @@
 
 <div class="vertical">
     <p>Enter your chat and then hit your enter key or press the 'send chat' button.</p>
-</div>
 
 <div id="chat-output"></div>
-<input type="textarea" id="chat-input">
+<textarea id="chat-input"></textarea>
+<label for="chat-input"></label>
 
 <button id='send-chat-btn'>Send Chat</button>
 <script src="./dist/index.js"></script>
 
 <!-- these are the new radio buttons here for controlling model selection -->
 <form>
-    <input type="radio" name="models" id="llama2-7b-cpu-radio">
-    <label for="llama2-7b-cpu-radio">llama2-7b-cpu</label>
-
-    <input type="radio" name="models" id="gpt-4-radio">
-    <label for="gpt-4-radio">gpt-4</label>
+    <p class="remove-spacing"> Select your model:</p>
 
     <input type="radio" name="models" id="gpt-35-radio" checked>
-    <label for="gpt-35-radio">gpt-35</label>
+    <label for="gpt-35-radio">GPT 3.5</label>
+
+    <input type="radio" name="models" id="gpt-4-radio">
+    <label for="gpt-4-radio">GPT 4</label>
+
+    <input type="radio" name="models" id="llama2-7b-cpu-radio">
+    <label for="llama2-7b-cpu-radio">Llama2 7B (CPU)</label>
 
     <input type="radio" name="models" id="llama2-7b-gpu-radio">
-    <label for="llama2-7b-gpu-radio">llama2-7b-gpu</label>
+    <label for="llama2-7b-gpu-radio">Llama2 7B (GPU)</label>
 
 </form>
 <div id="model-downloads-container"></div>
+
+<button id='add-files-as-context'>Add file(s) to context</button>
+<textarea id="context-input"></textarea>
+<label for="context-input"></label>
+
+<div id="context-files-added-container"></div>
+
+</div>
 
 </html>
 

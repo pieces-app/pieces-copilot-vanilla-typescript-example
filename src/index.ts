@@ -139,11 +139,11 @@ async function main() {
         downloadLLama27bcpuContainer.appendChild(llama27bcpuDownloadProgress);
         llama27bcpuDownloadProgress.id = `download-progress-${llama27bcpu.id}`
 
-        // if the model has already been downloaded, then the only option that we want to show on the button
-        // and the functionality will change.
-        //
-        // important to notice the ModelsApi()modelsDeleteSpecificModelCache --> then delete the cache using the
-        // id on the model itself coming out of Model.foundation.
+    // if the model has already been downloaded, then the only option that we want to show on the button
+    // and the functionality will change.
+    //
+    // important to notice the ModelsApi()modelsDeleteSpecificModelCache --> then delete the cache using the
+    // id on the model itself coming out of Model.foundation.
     } else {
         const deleteLlama27bcpuButton = document.createElement('button');
         modelDownloadsContainer.appendChild(deleteLlama27bcpuButton);

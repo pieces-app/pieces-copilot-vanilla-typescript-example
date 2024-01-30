@@ -1,10 +1,14 @@
 import * as Pieces from "@pieces.app/pieces-os-client";
+import {QGPTApi, SeedTypeEnum} from "@pieces.app/pieces-os-client";
+import {getApplication} from "./index";
 
 /**
  * Stream controller class for interacting with the QGPT websocket
  */
 export default class CopilotStreamController {
   public static selectedModelId: string = '';
+
+  public static selectedContextFiles: Array<string> = [];
 
   private static instance: CopilotStreamController;
 
@@ -43,10 +47,46 @@ export default class CopilotStreamController {
       this.connect();
     }
 
+    const userContextInput = document.getElementById('context-input')?.value;
+
+    const relevanceInput: Pieces.RelevanceRequest = {
+      qGPTRelevanceInput: {
+        query,
+        paths: CopilotStreamController.selectedContextFiles,
+      }
+    }
+
+    if (!relevanceInput.qGPTRelevanceInput) return;
+
+    const application = await getApplication();
+    if (!application) throw new Error('you must have a registered application to use this, is Pieces os running?')
+
+    if (userContextInput) {
+      relevanceInput.qGPTRelevanceInput.seeds = {
+        iterable: [
+          {
+            type: SeedTypeEnum.Asset,
+            asset: {
+              application,
+              format: {
+                fragment: {
+                  string: {
+                    raw: userContextInput
+                  }
+                }
+              }
+            }
+          }
+        ]
+      }
+    }
+
+    const relevanceOutput = await new QGPTApi().relevance(relevanceInput);
+
     const input: Pieces.QGPTStreamInput = {
       question: {
         query,
-        relevant: {iterable: []},
+        relevant: relevanceOutput.relevant,
         model: CopilotStreamController.selectedModelId
       },
     };
