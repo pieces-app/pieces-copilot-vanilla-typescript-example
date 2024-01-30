@@ -6,8 +6,10 @@ import {getApplication} from "./index";
  * Stream controller class for interacting with the QGPT websocket
  */
 export default class CopilotStreamController {
+  // selected model ID holds the model that is toggled on the radio buttons.
   public static selectedModelId: string = '';
 
+  // for storage of the selectedContextFiles.
   public static selectedContextFiles: Array<string> = [];
 
   private static instance: CopilotStreamController;
@@ -19,7 +21,6 @@ export default class CopilotStreamController {
   // this is resolved when the socket is ready.
   private connectionPromise: Promise<void> = new Promise<void>((res) => res);
 
-  //@TODO implement socket unloading
   private constructor() {
     this.connect();
   }
@@ -49,6 +50,7 @@ export default class CopilotStreamController {
 
     const userContextInput = document.getElementById('context-input')?.value;
 
+    // creating the relevance request and passing in our Pieces.Relevance Request.
     const relevanceInput: Pieces.RelevanceRequest = {
       qGPTRelevanceInput: {
         query,
@@ -65,12 +67,15 @@ export default class CopilotStreamController {
       relevanceInput.qGPTRelevanceInput.seeds = {
         iterable: [
           {
+            // the type of relevance input that is being used.
             type: SeedTypeEnum.Asset,
             asset: {
+              // the application that is created from above and registered.
               application,
               format: {
                 fragment: {
                   string: {
+                    // the raw user input that was supplied and is a string.
                     raw: userContextInput
                   }
                 }
