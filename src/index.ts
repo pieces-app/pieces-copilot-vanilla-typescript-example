@@ -159,17 +159,21 @@ async function main() {
     const llama27bgpuButton: HTMLElement | null = document.getElementById('llama2-7b-gpu-radio') as HTMLInputElement | null;
     if (!llama27bgpuButton) throw new Error('expected id llama27bgpuButton');
 
-    //
+    // for downloading the Llama2 GPU model to disable if it is not downloaded.
     if (!llama27bgpu?.downloaded) {
         llama27bgpuButton.setAttribute('disabled', 'true');
 
+        // attaches to the GPU container where the button.
         const downloadLLama27bgpuContainer = document.createElement('div');
         modelDownloadsContainer.appendChild(downloadLLama27bgpuContainer);
 
+        // the button itself that handles the download of the model, we also add in the button text here.
         const downloadLlama27bgpuButton = document.createElement('button');
         downloadLlama27bgpuButton.innerText = 'Download Llama2 7B GPU'
         downloadLLama27bgpuContainer.appendChild(downloadLlama27bgpuButton);
 
+        // then we set the download llama2GPUButton to pass in  the model specific id that is needed to start the
+        // download of the model.
         downloadLlama27bgpuButton.onclick = (e) => {
             new ModelApi().modelSpecificModelDownload({model: llama27bgpu.id})
         }
