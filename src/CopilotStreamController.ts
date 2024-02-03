@@ -48,7 +48,7 @@ export default class CopilotStreamController {
       this.connect();
     }
 
-    const userContextInput = document.getElementById('context-input')?.value;
+    const userContextInput: HTMLInputElement = document.getElementById('context-input')?.value;
 
     // creating the relevance request and passing in our Pieces.Relevance Request.
     const relevanceInput: Pieces.RelevanceRequest = {
@@ -76,7 +76,7 @@ export default class CopilotStreamController {
                 fragment: {
                   string: {
                     // the raw user input that was supplied and is a string.
-                    raw: userContextInput
+                    raw: userContextInput.value
                   }
                 }
               }

@@ -3,7 +3,7 @@ import ModelProgressController from "./ModelProgressController";
 import {
     Application,
     ApplicationNameEnum,
-    ConnectorApi,
+    ConnectorApi, Model,
     ModelApi,
     ModelFoundationEnum,
     ModelsApi,
@@ -75,7 +75,7 @@ async function main() {
     const models = await modelProgressController.models;
 
     // creates the bos around the models download buttons that hold each of the button options.
-    const modelDownloadsContainer = document.getElementById('model-downloads-container') as HTMLDivElement | null;
+    const modelDownloadsContainer = document.getElementById('model-downloads-container') as HTMLDivElement;
     if (!modelDownloadsContainer) throw new Error('expected id model-downloads-container')
 
     // set all model values for setting each onclick function.
@@ -83,6 +83,8 @@ async function main() {
     const gpt4 = models.iterable.find((model) => model.foundation === ModelFoundationEnum.Gpt4)!;
     const llama27bcpu = models.iterable.find((model) => model.foundation === ModelFoundationEnum.Llama27B && model.cpu)!;
     const llama27bgpu = models.iterable.find((model) => model.foundation === ModelFoundationEnum.Llama27B && !model.cpu)!;
+    const mistralcpu = models.iterable.find((model) =>  model.foundation === ModelFoundationEnum.Mistral7B && model.cpu)!;
+    const mistralgpu = models.iterable.find((model) =>  model.foundation === ModelFoundationEnum.Mistral7B && !model.cpu)!;
 
     // set your model id here for gpt-3.5 so that when the page loads it defaults to 3.5
     CopilotStreamController.selectedModelId = gpt35.id;
@@ -90,107 +92,97 @@ async function main() {
 
     // each button is set equal to the element on the dom, then an onclick is attached to it that will set the
     // selectedModelId to the appropriate model based on user selection.
-    const gpt35Button: HTMLElement | null = document.getElementById('gpt-35-radio') as HTMLInputElement | null;
-    if (!gpt35Button) throw new Error('expected id gpt35Button');
-    gpt35Button.onclick = () => {
+    const gpt35Radio: HTMLElement | null = document.getElementById('gpt-35-radio') as HTMLInputElement | null;
+    if (!gpt35Radio) throw new Error('expected id gpt35RadioButton');
+    gpt35Radio.onclick = () => {
         CopilotStreamController.selectedModelId = gpt35.id;
     }
 
-    const gpt4Button: HTMLElement | null = document.getElementById('gpt-4-radio') as HTMLInputElement | null;
-    if (!gpt4Button) throw new Error('expected id gpt4Button');
-    gpt4Button.onclick = () => {
+    const gpt4Radio: HTMLElement | null = document.getElementById('gpt-4-radio') as HTMLInputElement | null;
+    if (!gpt4Radio) throw new Error('expected id gpt4RadioButton');
+    gpt4Radio.onclick = () => {
         CopilotStreamController.selectedModelId = gpt4.id;
     }
 
+    // function for managing the downloaded model state.
+    // TODO: add details here around parameters and this new function.
+    function downloadButtonState(model: Model, radio: HTMLInputElement, downloadContainer: HTMLDivElement, downloadButton: HTMLButtonElement, downloadProgress: HTMLDivElement, deleteButton: HTMLButtonElement) {
+        if (!model.downloaded) {
+            radio.setAttribute('disabled', 'true');
 
-    // llama cpu/GPU buttons are a bit more complex, as these models are conditionally downloaded and need to contain logic
-    // around the status, progress, and state of the model in the environment.
-    //
-    // each of these examples for both:
-    // - llama27bcpuButton
-    // - llama27bgpuButton
-    //
-    // are essentially the same, so I would use this as a reference if you are looking to create your own button.
-    const llama27bcpuButton: HTMLElement | null = document.getElementById('llama2-7b-cpu-radio') as HTMLInputElement | null;
-    if (!llama27bcpuButton) throw new Error('expected id llama27bcpuButton');
+            modelDownloadsContainer!.appendChild(downloadContainer);
+            // TODO: need to add some systems for managing the strings for each button based on its model.
+            downloadButton.innerText = `Download ${model.name}`;
+            downloadContainer.appendChild(downloadButton);
 
-    // .downloaded will let you know if the model has already been successfully downloaded, and then we use that to
-    // either make the radio button clickable.
-    if (!llama27bcpu?.downloaded) {
-        llama27bcpuButton.setAttribute('disabled', 'true');
+            // download logic for the model downloads when a user clicks the download button.
+            downloadButton.onclick = () => {
+                new ModelApi().modelSpecificModelDownload({model: model.id}).then(console.log).catch(console.error)
+            }
 
-        // creates the button for the specific model, adds the correct button message, and then appends the button to
-        // our container.
-        const downloadLLama27bcpuContainer = document.createElement('div');
-        modelDownloadsContainer.appendChild(downloadLLama27bcpuContainer);
-        const downloadLlama27bcpuButton = document.createElement('button');
-        downloadLlama27bcpuButton.innerText = 'Download Llama2 7B CPU'
-        downloadLLama27bcpuContainer.appendChild(downloadLlama27bcpuButton);
+            downloadContainer.appendChild(downloadProgress);
+            downloadProgress.id = `download-progress-${model.id}`
+        } else {
 
-        // when the button is clicked, we want to select the specific model that is connected to that button, and
-        // log any errors that we may get back when making the request.
-        downloadLlama27bcpuButton.onclick = (e) => {
-            new ModelApi().modelSpecificModelDownload({model: llama27bcpu.id}).then(console.log).catch(console.error)
-        }
 
-        // a similar thing takes place here for the download element, we create a div but instead adding text to this container,
-        // an ID is given, then we can locate it later via the Websocket and update the appropriate div.
-        const llama27bcpuDownloadProgress = document.createElement('div');
-        downloadLLama27bcpuContainer.appendChild(llama27bcpuDownloadProgress);
-        llama27bcpuDownloadProgress.id = `download-progress-${llama27bcpu.id}`
+            modelDownloadsContainer!.appendChild(deleteButton);
 
-    // if the model has already been downloaded, then the only option that we want to show on the button
-    // and the functionality will change.
-    //
-    // important to notice the ModelsApi()modelsDeleteSpecificModelCache --> then delete the cache using the
-    // id on the model itself coming out of Model.foundation.
-    } else {
-        const deleteLlama27bcpuButton = document.createElement('button');
-        modelDownloadsContainer.appendChild(deleteLlama27bcpuButton);
-        deleteLlama27bcpuButton.innerText = 'Delete Llama27b CPU';
-        deleteLlama27bcpuButton.onclick = () => {
-            new ModelsApi().modelsDeleteSpecificModelCache({model: llama27bcpu.id, modelDeleteCacheInput: {}}).then(() => {
-                // a great tool to refresh the page ->
-                window.location.reload()
-            })
+
+            deleteButton.innerText = `Delete ${model.name}`;
+            deleteButton.onclick = () => {
+                new ModelsApi().modelsDeleteSpecificModelCache({model: model.id, modelDeleteCacheInput: {}}).then(() => {
+                    // a great tool to refresh the page ->
+                    window.location.reload()
+                })
+            }
+
         }
     }
 
-    const llama27bgpuButton: HTMLElement | null = document.getElementById('llama2-7b-gpu-radio') as HTMLInputElement | null;
-    if (!llama27bgpuButton) throw new Error('expected id llama27bgpuButton');
+    const llama27bcpuRadio: HTMLInputElement | null = document.getElementById('llama2-7b-cpu-radio') as HTMLInputElement | null;
+    if (!llama27bcpuRadio) throw new Error('expected id llama27bcpuButton');
 
-    // for downloading the Llama2 GPU model to disable if it is not downloaded.
-    if (!llama27bgpu?.downloaded) {
-        llama27bgpuButton.setAttribute('disabled', 'true');
+    // Llama2 CPU centric buttons, const, and elements. These are used in the downloadButtonState for handing download progress.
+    const downloadLLama27bcpuContainer = document.createElement('div');
+    const llama27bcpuDownloadProgress = document.createElement('div');
+    const downloadLlama27bcpuButton = document.createElement('button');
+    const deleteLlama27bcpuButton = document.createElement('button');
 
-        // attaches to the GPU container where the button.
-        const downloadLLama27bgpuContainer = document.createElement('div');
-        modelDownloadsContainer.appendChild(downloadLLama27bgpuContainer);
+    downloadButtonState(llama27bcpu, llama27bcpuRadio, downloadLLama27bcpuContainer, downloadLlama27bcpuButton, llama27bcpuDownloadProgress, deleteLlama27bcpuButton);
 
-        // the button itself that handles the download of the model, we also add in the button text here.
-        const downloadLlama27bgpuButton = document.createElement('button');
-        downloadLlama27bgpuButton.innerText = 'Download Llama2 7B GPU'
-        downloadLLama27bgpuContainer.appendChild(downloadLlama27bgpuButton);
+    // get the LLAMA2 radio button for selection.
+    const llama27bgpuRadio: HTMLInputElement | null = document.getElementById('llama2-7b-gpu-radio') as HTMLInputElement | null;
+    if (!llama27bgpuRadio) throw new Error('expected id llama27bgpuRadio');
 
-        // then we set the download llama2GPUButton to pass in  the model specific id that is needed to start the
-        // download of the model.
-        downloadLlama27bgpuButton.onclick = (e) => {
-            new ModelApi().modelSpecificModelDownload({model: llama27bgpu.id})
-        }
+    // Llama2 GPU centric
+    const downloadLLama27bgpuContainer = document.createElement('div');
+    const downloadLlama27bgpuButton = document.createElement('button');
+    const llama27bgpuDownloadProgress = document.createElement('div');
+    const deleteLlama27bgpuButton = document.createElement('button');
 
-        const llama27bgpuDownloadProgress = document.createElement('div');
-        downloadLLama27bgpuContainer.appendChild(llama27bgpuDownloadProgress);
-        llama27bgpuDownloadProgress.id = `download-progress-${llama27bgpu.id}`
-    } else {
-        const deleteLlama27bgpuButton = document.createElement('button');
-        modelDownloadsContainer.appendChild(deleteLlama27bgpuButton);
-        deleteLlama27bgpuButton.innerText = 'Delete Llama27b GPU';
-        deleteLlama27bgpuButton.onclick = () => {
-            new ModelsApi().modelsDeleteSpecificModelCache({model: llama27bgpu.id, modelDeleteCacheInput: {}}).then(() => {
-                window.location.reload()
-            })
-        }
-    }
+    downloadButtonState(llama27bgpu, llama27bgpuRadio, downloadLLama27bgpuContainer,downloadLlama27bgpuButton, llama27bgpuDownloadProgress, deleteLlama27bgpuButton);
+
+    const mistralCpuRadio: HTMLInputElement | null = document.getElementById('mistral-cpu-radio') as HTMLInputElement | null;
+    if (!mistralCpuRadio) throw new Error('expected id mistral-cpu-radio');
+
+    // mistral CPU centric
+    const mistralCpuContainer = document.createElement('div');
+    const downloadMistralCpuButton = document.createElement('button');
+    const mistralCpuDownloadProgress = document.createElement('div');
+    const deleteMistralCpuButton = document.createElement('button');
+
+    downloadButtonState(mistralcpu, mistralCpuRadio, mistralCpuContainer, downloadMistralCpuButton, mistralCpuDownloadProgress, deleteMistralCpuButton);
+
+    const mistralGpuRadio: HTMLInputElement | null = document.getElementById('mistral-gpu-radio') as HTMLInputElement | null;
+    if (!mistralGpuRadio) throw new Error('expected id mistral-cpu-button');
+
+    // mistral GPU centric
+    const mistralGpuContainer = document.createElement('div');
+    const downloadMistralGpuButton = document.createElement('button');
+    const mistralGpuDownloadProgress = document.createElement('div');
+    const deleteMistralGpuButton = document.createElement('button');
+
+    downloadButtonState(mistralgpu, mistralGpuRadio, mistralGpuContainer, downloadMistralGpuButton, mistralGpuDownloadProgress, deleteMistralGpuButton);
 
     // button controls when the userInput.value is sent over to the copilot as a query.
     const sendChatBtn = document.getElementById("send-chat-btn");
@@ -210,7 +202,7 @@ async function main() {
 
                 // holds text of each file that is added.
                 const contextContainer = document.getElementById('context-files-added-container');
-                if (!contextContainer) throw new error ('expected id context-files-added-container');
+                if (!contextContainer) throw new Error ('expected id context-files-added-container');
 
                 const newFileEntry = document.createElement( "p");
                 newFileEntry.innerText = file;
