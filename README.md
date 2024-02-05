@@ -25,17 +25,17 @@ which in the `CopilotStreamController.ts` file takes the userInput and passes it
 
 ```typescript
 public async askQGPT({
-                         query,
-                         setMessage
-                       }: {
+    query,
+    setMessage}: {
     query: string;
     setMessage: (message: string) => void;
-  }): Promise<void> {
-    // connect if not established.
+}): Promise<void> {
+    // connect if not already established.
     if (!this.ws) {
       this.connect();
     }
 
+    // simple query sent (string) with no relevance.
     const input: Pieces.QGPTStreamInput = {
       question: {
         query,
@@ -44,7 +44,7 @@ public async askQGPT({
     };
 
     this.handleMessages({ input, setMessage });
-  }
+}
 ```
 
 ## Pieces.QGPTStreamInput
@@ -53,10 +53,10 @@ This is the proper type that you send a stream endpoint over on. Query is the in
 
 ```typescript
 const input: PiecesQGPTStreamInput = {
-	question: {
-		query,
-		relevant: {iterable: []}
-	},
+    question: {
+        query,
+	relevant: {iterable: []}
+    },
 }
 ```
 
@@ -66,14 +66,15 @@ When you receive a message back, and in this example where it comes back from th
 
 ```typescript
 this.ws.onmessage = (msg) => {
-      // can start by parsing the msg.data that comes back.
-      const json = JSON.parse(msg.data);
 
-      // take that result and pass it into the QGPTStreamOutputFromJSON() endpoint.
-      const result = Pieces.QGPTStreamOutputFromJSON(json);
+  // can start by parsing the msg.data that comes back.
+  const json = JSON.parse(msg.data);
 
-      // then get your answer on the result by getting the first/latest answer.
-      const answer: Pieces.QGPTQuestionAnswer | undefined = result.question?.answers.iterable[0];
+  // take that result and pass it into the QGPTStreamOutputFromJSON() endpoint.
+  const result = Pieces.QGPTStreamOutputFromJSON(json);
+
+  // then get your answer on the result by getting the first/latest answer.
+  const answer: Pieces.QGPTQuestionAnswer | undefined = result.question?.answers.iterable[0];
 }
 ```
 
@@ -98,6 +99,7 @@ private connect (){
       // this monitors the status of each message to know when a full message has completed.
       // status is 'UKNOWN' until it is completed.
       if (result.status === 'COMPLETED') {
+        
         // in the unlikely event there is no message, show an error message
         if (!totalMessage) {
           this.setMessage?.("ERROR: received no messages from the copilot websockets")
