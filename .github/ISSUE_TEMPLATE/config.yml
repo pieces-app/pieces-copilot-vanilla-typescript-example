@@ -1,0 +1,11 @@
+blank_issues_enabled: true
+contact_links:
+  - name: Discord Community Support
+    url: https://discord.gg/getpieces
+    about: You can ask your questions regarding any of our open source projects or SDKs.
+  - name: Documentation
+    url: https://docs.pieces.app/
+    about: Check out our Pieces documentation here.
+  - name: Pieces YouTube Channel
+    url: https://www.youtube.com/@getpieces
+    about: Watch AMAs, Livestream and Past Open Source by Pieces meetups.
