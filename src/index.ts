@@ -84,9 +84,14 @@ async function main() {
     const llama27bcpu = models.iterable.find((model) => model.foundation === ModelFoundationEnum.Llama27B && model.cpu)!;
     const llama27bgpu = models.iterable.find((model) => model.foundation === ModelFoundationEnum.Llama27B && !model.cpu)!;
 
+    const mistralCpu = models.iterable.find((model) => model.foundation === ModelFoundationEnum.Mistral7B && model.cpu)!;
+    const mistralGpu = models.iterable.find((model) => model.foundation === ModelFoundationEnum.Mistral7B && !model.cpu)!;
+
+    console.log(mistralCpu)
+
+
     // set your model id here for gpt-3.5 so that when the page loads it defaults to 3.5
     CopilotStreamController.selectedModelId = gpt35.id;
-
 
     // each button is set equal to the element on the dom, then an onclick is attached to it that will set the
     // selectedModelId to the appropriate model based on user selection.
@@ -188,6 +193,72 @@ async function main() {
         }
     }
 
+    // mistral CPU download management.
+    const mistralCpuRadio: HTMLElement | null = document.getElementById('mistral-cpu-radio') as HTMLInputElement | null;
+
+    if(!mistralCpu?.downloaded) {
+        mistralCpuRadio?.setAttribute('disabled', 'true');
+
+        const downloadMistralCpuContainer = document.createElement('div');
+        modelDownloadsContainer.appendChild(downloadMistralCpuContainer);
+
+        const downloadMistralCpuButton = document.createElement('button');
+        downloadMistralCpuButton.innerText = "Download Mistral 7B CPU";
+        downloadMistralCpuContainer.appendChild(downloadMistralCpuButton);
+
+        downloadMistralCpuButton.onclick = (e) => {
+            new ModelApi().modelSpecificModelDownload( { model: mistralCpu.id});
+        }
+
+        const mistralCpuDownloadProgress = document.createElement('div');
+        downloadMistralCpuContainer.appendChild(mistralCpuDownloadProgress);
+
+        // creates the ID we need here using the unique value.
+        mistralCpuDownloadProgress.id = `download-progress-${mistralCpu.id}`
+    } else  {
+        const deleteMistralCpuButton = document.createElement('button');
+        modelDownloadsContainer.appendChild(deleteMistralCpuButton);
+        deleteMistralCpuButton.innerText = 'Delete Mistral 7b (CPU)';
+        deleteMistralCpuButton.onclick = () => {
+            new ModelsApi().modelsDeleteSpecificModelCache({ model: mistralCpu.id, modelDeleteCacheInput: {}}).then(() => {
+                window.location.reload()
+            })
+        }
+    }
+
+    // mistral GPU download management.
+    const mistralGpuRadio: HTMLElement | null = document.getElementById('mistral-gpu-radio') as HTMLInputElement | null;
+
+    if(!mistralGpu?.downloaded) {
+        mistralGpuRadio?.setAttribute('disabled', 'true');
+
+        const downloadMistralGpuContainer = document.createElement('div');
+        modelDownloadsContainer.appendChild(downloadMistralGpuContainer);
+
+        const downloadMistralGpuButton = document.createElement('button');
+        downloadMistralGpuButton.innerText = "Download Mistral 7B CPU";
+        downloadMistralGpuContainer.appendChild(downloadMistralGpuButton);
+
+        downloadMistralGpuButton.onclick = (e) => {
+            new ModelApi().modelSpecificModelDownload( { model: mistralGpu.id});
+        }
+
+        const mistralGpuDownloadProgress = document.createElement('div');
+        downloadMistralGpuContainer.appendChild(mistralGpuDownloadProgress);
+
+        // creates the ID we need here using the unique value.
+        mistralGpuDownloadProgress.id = `download-progress-${mistralGpu.id}`
+    } else  {
+        const deleteMistralGpuButton = document.createElement('button');
+        modelDownloadsContainer.appendChild(deleteMistralGpuButton);
+        deleteMistralGpuButton.innerText = 'Delete Mistral 7b (GPU)';
+        deleteMistralGpuButton.onclick = () => {
+            new ModelsApi().modelsDeleteSpecificModelCache({ model: mistralGpu.id, modelDeleteCacheInput: {}}).then(() => {
+                window.location.reload()
+            })
+        }
+    }
+
     // button controls when the userInput.value is sent over to the copilot as a query.
     const sendChatBtn = document.getElementById("send-chat-btn");
     if (!sendChatBtn) throw new Error('expected id send-chat-btn');
@@ -206,7 +277,7 @@ async function main() {
 
                 // holds text of each file that is added.
                 const contextContainer = document.getElementById('context-files-added-container');
-                if (!contextContainer) throw new error ('expected id context-files-added-container');
+                if (!contextContainer) throw new Error ('expected id context-files-added-container');
 
                 const newFileEntry = document.createElement( "p");
                 newFileEntry.innerText = file;
