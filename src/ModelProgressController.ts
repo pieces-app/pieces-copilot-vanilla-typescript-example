@@ -24,7 +24,8 @@ export default class ModelProgressController {
       this.initSockets(
         models.iterable.filter(
           (el) =>
-            el.foundation === Pieces.ModelFoundationEnum.Llama27B &&
+            // this filter is important and defines what possible websockets will be initialized and included in the filtered list.
+            (el.foundation === Pieces.ModelFoundationEnum.Llama27B || el.foundation === Pieces.ModelFoundationEnum.Mistral7B ) &&
             el.unique !== 'llama-2-7b-chat.ggmlv3.q4_K_M'
         )
       );
@@ -58,6 +59,7 @@ export default class ModelProgressController {
     ws.onmessage = (evt) => {
       const event = Pieces.ModelDownloadProgressFromJSON(JSON.parse(evt.data));
       const downloadProgressElement = document.getElementById(`download-progress-${model.id}`)
+      console.log(`${model.name}`)
       if (!downloadProgressElement) return;
 
       // controls what text shows as the model is in different states - you can see this

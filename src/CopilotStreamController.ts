@@ -48,7 +48,7 @@ export default class CopilotStreamController {
       this.connect();
     }
 
-    const userContextInput = document.getElementById('context-input')?.value;
+    const userContextInput = document.getElementById('context-input')?.innerText;
 
     // creating the relevance request and passing in our Pieces.Relevance Request.
     const relevanceInput: Pieces.RelevanceRequest = {
