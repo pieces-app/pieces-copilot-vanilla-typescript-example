@@ -6,3 +6,9 @@ contact_links:
   - name: Documentation
     url: https://docs.pieces.app/
     about: Pieces documentation.
+  - name: Support 
+    url: https://github.com/pieces/pieces-app/support/new/choose 
+    about: Ask questions here.
+  - name: Pieces YouTube Channel 
+    url: https://www.youtube.com/@getpieces
+    about: Watch AMAs, Livestream and Past Open Source by Pieces meetups.
