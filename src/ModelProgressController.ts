@@ -25,7 +25,7 @@ export default class ModelProgressController {
         models.iterable.filter(
           (el) =>
             // this filter is important and defines what possible websockets will be initialized and included in the filtered list.
-            (el.foundation === Pieces.ModelFoundationEnum.Llama27B || el.foundation === Pieces.ModelFoundationEnum.Mistral7B ) &&
+            (el.foundation === Pieces.ModelFoundationEnum.Llama27B || el.foundation === Pieces.ModelFoundationEnum.Mistral7B || el.foundation === Pieces.ModelFoundationEnum.Phi2 ) &&
             el.unique !== 'llama-2-7b-chat.ggmlv3.q4_K_M'
         )
       );
