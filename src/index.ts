@@ -285,37 +285,37 @@ async function main() {
         }
     }
 
-    // // Phi2 GPU
-    // const phi2GpuRadio: HTMLElement | null = document.getElementById("phi2-gpu-radio") as HTMLInputElement | null;
-    //
-    // if (!phi2Gpu?.downloaded) {
-    //     phi2GpuRadio?.setAttribute("disabled", "true");
-    //
-    //     const downloadPhi2GpuContainer = document.createElement("div");
-    //     modelDownloadsContainer.appendChild(downloadPhi2GpuContainer);
-    //
-    //     const downloadPhi2GpuButton = document.createElement("button");
-    //     downloadPhi2GpuButton.innerText = "Download Phi-2 GPU";
-    //     downloadPhi2GpuContainer.appendChild(downloadPhi2GpuButton);
-    //
-    //     downloadPhi2GpuButton.onclick = () => {
-    //         new Pieces.ModelApi().modelSpecificModelDownload({model: phi2Cpu.id});
-    //     }
-    //
-    //     const phi2GpuDownloadProgress = document.createElement("div");
-    //     downloadPhi2GpuContainer.appendChild(phi2GpuDownloadProgress);
-    //
-    //     phi2GpuDownloadProgress.id = `download-progress-${phi2Gpu.id}`;
-    // } else {
-    //     const deletePhi2GpuButton = document.createElement("button");
-    //     modelDownloadsContainer.appendChild(deletePhi2GpuButton);
-    //     deletePhi2GpuButton.innerText = 'Delete Phi2 GPU';
-    //     deletePhi2GpuButton.onclick = () => {
-    //         new Pieces.ModelsApi().modelsDeleteSpecificModelCache({ model: mistralGpu.id, modelDeleteCacheInput: {}}).then(() => {
-    //             window.location.reload();
-    //         })
-    //     }
-    // }
+    // Phi2 GPU
+    const phi2GpuRadio: HTMLElement | null = document.getElementById("phi2-gpu-radio") as HTMLInputElement | null;
+
+    if (!phi2Gpu?.downloaded) {
+        phi2GpuRadio?.setAttribute("disabled", "true");
+
+        const downloadPhi2GpuContainer = document.createElement("div");
+        modelDownloadsContainer.appendChild(downloadPhi2GpuContainer);
+
+        const downloadPhi2GpuButton = document.createElement("button");
+        downloadPhi2GpuButton.innerText = "Download Phi-2 GPU";
+        downloadPhi2GpuContainer.appendChild(downloadPhi2GpuButton);
+
+        downloadPhi2GpuButton.onclick = () => {
+            new Pieces.ModelApi().modelSpecificModelDownload({model: phi2Gpu.id});
+        }
+
+        const phi2GpuDownloadProgress = document.createElement("div");
+        downloadPhi2GpuContainer.appendChild(phi2GpuDownloadProgress);
+
+        phi2GpuDownloadProgress.id = `download-progress-${phi2Gpu.id}`;
+    } else {
+        const deletePhi2GpuButton = document.createElement("button");
+        modelDownloadsContainer.appendChild(deletePhi2GpuButton);
+        deletePhi2GpuButton.innerText = 'Delete Phi2 GPU';
+        deletePhi2GpuButton.onclick = () => {
+            new Pieces.ModelsApi().modelsDeleteSpecificModelCache({ model: mistralGpu.id, modelDeleteCacheInput: {}}).then(() => {
+                window.location.reload();
+            })
+        }
+    }
 
     // button controls when the userInput.value is sent over to the copilot as a query.
     const sendChatBtn = document.getElementById("send-chat-btn");
