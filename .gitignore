@@ -1,3 +1,4 @@
 .idea/
 node_modules/
 package_lock.json
+/dist
