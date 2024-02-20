@@ -7,7 +7,7 @@
     "typescript": "^5.3.3"
   },
   "dependencies": {
-    "@pieces.app/pieces-os-client": "^1.2.5",
+    "@pieces.app/pieces-os-client": "^2.0.0-2",
     "@types/node": "^20.10.6",
     "esbuild": "^0.19.11",
     "ws": "^8.16.0"
