@@ -13,8 +13,8 @@
         max-width: 550px;
     }
 
-    .remove-spacing {
-        margin: 0 5px;
+    .mini-spacing {
+        margin: 5px 0;
     }
 
     #model-downloads-container {
@@ -26,7 +26,7 @@
 <h1>Pieces Copilot</h1>
 
 <div class="vertical">
-    <p>Enter your chat and then hit your enter key or press the 'send chat' button.</p>
+    <h4 class="mini-spacer">Send a message to the Pieces Copilot with the selected model. Your response to your question will be above the chat text:</h4>
 
 <div id="chat-output"></div>
 <textarea id="chat-input"></textarea>
@@ -37,7 +37,7 @@
 
 <!-- these are the new radio buttons here for controlling model selection -->
 <form>
-    <p class="remove-spacing"> Select your model:</p>
+    <h4 class="mini-spacing"> To choose your model, select a radio dial:</h4>
 
     <input type="radio" name="models" id="gpt-35-radio" checked>
     <label for="gpt-35-radio">GPT 3.5</label>
@@ -64,12 +64,13 @@
     <label for="phi2-gpu-radio">Phi-2 (GPU)</label>
 
 </form>
+    <h4 class="mini-spacing">Model Downloads & Status:</h4>
 <div id="model-downloads-container"></div>
 
+    <h4 class="mini-spacer">Manage Your Context:</h4>
 <button id='add-files-as-context'>Add file(s) to context</button>
 <textarea id="context-input"></textarea>
 <label for="context-input"></label>
-
 <div id="context-files-added-container"></div>
 
 </div>
